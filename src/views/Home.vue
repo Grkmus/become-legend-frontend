@@ -6,8 +6,9 @@
                 <h4>events</h4>
                 <template v-for="event in events">
                   <!-- <button  :key="event.id">Go to Event</button> -->
-                  <event-card @click.native="goToEvent(event.id)" :key="event.id" :event="event" ></event-card>
-                  <hr>
+                  <event-card @click.native="goToEvent(event.id)" :key="event.id" :event="event" >
+
+                  </event-card>
                 </template>
             </div>
         </div>
@@ -24,33 +25,32 @@
 </template>
 
 <script>
-import PlayerCard from '@/components/PlayerCard.vue'
-import EventCard from '@/components/EventCard.vue'
-import { mapState } from 'vuex'
+import { mapState } from 'vuex';
+import EventCard from '../components/EventCard.vue';
 // import axios from 'axios'
 
 export default {
   name: 'home',
   created() {
     // this.$store.dispatch('fetchPlayers')
-    this.$store.dispatch('fetchEvents')
+    this.$store.dispatch('fetchEvents');
   },
   computed: {
-    ...mapState(['events',]),
+    ...mapState(['events']),
   },
   components: {
-     EventCard,
+    EventCard,
   },
   methods: {
-    goToEvent: function(event_id) {
-      this.$router.push({
+    goToEvent(eventId) {
+      this.$this.$router.push({
         name: 'event',
-        params: { id: event_id }
-      })
+        params: { id: eventId },
+      });
       // console.log('event clicked!', event_id)
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style>

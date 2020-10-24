@@ -23,36 +23,36 @@
 </template>
 
 <script>
-import axios from "axios";
+import axios from 'axios';
 
 export default {
-  name: "event-card",
+  name: 'event-card',
   props: {
-    event: Object
+    event: Object,
   },
   computed: {
-    numberOfAttendees: function() {
+    numberOfAttendees() {
       return this.event.attendees.length;
-    }
+    },
     // alreadyAttended: function() {
     //     if (this.$state.player)
     // }
   },
   methods: {
-    attendToEvent: function() {
+    attendToEvent() {
       console.log(
-        "attend to an event",
+        'attend to an event',
         this.$store.state.user.id,
-        this.event.id
+        this.event.id,
       );
       const userId = this.$store.state.user.id;
       axios
         .post(
-          `http://localhost:8080/api/player/${userId}/event/${this.event.id}`
+          `http://localhost:8080/api/player/${userId}/event/${this.event.id}`,
         )
-        .then(res => console.log(res));
-    }
-  }
+        .then((res) => console.log(res));
+    },
+  },
 };
 </script>
 

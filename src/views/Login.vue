@@ -20,35 +20,33 @@
   </div>
 </template>
 <script>
-import router from "../router.js";
-import axios from "axios";
-import jwt from "jsonwebtoken";
+import axios from 'axios';
 
 export default {
-  name: "login",
+  name: 'login',
   methods: {
-    getFormValues: async function(submitEvent) {
+    async getFormValues(submitEvent) {
       const formElements = submitEvent.target.elements;
       const player = {
         username: formElements[0].value,
-        password: formElements[1].value
+        password: formElements[1].value,
       };
       await axios
-        .post("http://localhost:8080/api/login", player)
-        .then(async res => {
-          const token = res.data.token;
-          localStorage.setItem("token", token);
-          this.$store.dispatch("getUser").then(() => {
-            router.push("home");
+        .post('http://localhost:8080/api/login', player)
+        .then(async (res) => {
+          const { token } = res.data;
+          localStorage.setItem('token', token);
+          this.$store.dispatch('getUser').then(() => {
+            this.$router.push('home');
           });
         })
-        .catch(err => {
-          if (err.response.status == 500) alert("wrong username or password");
+        .catch((err) => {
+          if (err.response.status === 500) alert('wrong username or password');
           else alert(err.message);
           console.log(err);
         });
-    }
-  }
+    },
+  },
 };
 </script>
 

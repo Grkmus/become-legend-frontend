@@ -60,33 +60,32 @@
 </template>
 
 <script>
-import axios from "axios";
-import router from "../router.js";
+import axios from 'axios';
 
 export default {
-  name: "profile",
+  name: 'profile',
   async created() {
     await this.fetchPlayer(this.$route.params.id);
   },
   data() {
     return {
-      player: {}
+      player: {},
     };
   },
   methods: {
-    fetchPlayer: async function(id) {
+    async fetchPlayer(id) {
       const res = await axios
         .get(`http://localhost:8080/api/player/${id}`)
-        .catch(err => {
-          router.push({
-            name: "notfound",
-            params: { message: err.message }
+        .catch((err) => {
+          this.$router.push({
+            name: 'notfound',
+            params: { message: err.message },
           });
         });
       console.log(res);
       this.player = res.data;
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -10,7 +10,9 @@
             <h2 class="card-title">{{ player.name }} {{ player.surname }}</h2>
             <p class="card-text">@{{ player.username }}</p>
             <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-            <a class="btn-lg btn-danger" :href="'/player/' + player.id + '/quiz'">Fill out the quick form to play basketball!</a>
+            <a class="btn-lg btn-danger" :href="'/player/' + player.id + '/quiz'">
+              Fill out the quick form to play basketball!
+            </a>
           </div>
         </div>
       </div>
@@ -52,22 +54,21 @@
 </template>
 
 <script>
-import router from '../router.js'
-import EventCard from '@/components/EventCard.vue'
-import { mapState } from 'vuex'
+import { mapState } from 'vuex';
+import EventCard from '../components/EventCard.vue';
 
 export default {
   name: 'player',
-  async created(){
-    await this.$store.dispatch('fetchPlayer', this.$route.params.id)
+  async created() {
+    await this.$store.dispatch('fetchPlayer', this.$route.params.id);
   },
   computed: {
-    ...mapState(['player'])
+    ...mapState(['player']),
   },
   components: {
     EventCard,
   },
-}
+};
 </script>
 
 <style>

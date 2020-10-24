@@ -6,18 +6,18 @@
 </template>
 
 <script>
-// import Player from '@/components/PlayerCard.vue'
-// import dailyEvent from '@/components/EventCard.vue'
+// import Player from '../components/PlayerCard.vue'
+// import dailyEvent from '../components/EventCard.vue'
 // import axios from 'axios'
 
 export default {
   name: 'notfound',
-  data(){
+  data() {
     return {
-      message: this.$route.params.message
-    }
-  }, 
-}
+      message: this.$route.params.message,
+    };
+  },
+};
 </script>
 
 <style>

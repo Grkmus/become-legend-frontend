@@ -1,68 +1,45 @@
 {
-  "name": "frontend",
-  "version": "0.1.0",
+  "name": "become-legend-frontend",
+  "version": "0.0.1",
+  "description": "An app for organizing games with your friends and keeping track of your performance.",
+  "productName": "Quasar App",
+  "author": "Gorkem Tosun <gorkemtosun@gmail.com>",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
-    "test:unit": "vue-cli-service test:unit"
+    "lint": "eslint --ext .js,.vue ./",
+    "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
+    "@quasar/extras": "^1.0.0",
+    "core-js": "^3.6.5",
+    "quasar": "^1.0.0",
     "@hapi/joi": "^15.1.0",
     "axios": "^0.19.0",
-    "core-js": "^2.6.5",
-    "cors": "^2.8.5",
-    "jsonwebtoken": "^8.5.1",
-    "vue": "^2.6.10",
-    "vue-router": "^3.0.3",
-    "vuex": "^3.0.1"
+    "jsonwebtoken": "^8.5.1"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.8.0",
-    "@vue/cli-plugin-eslint": "^3.8.0",
-    "@vue/cli-plugin-unit-mocha": "^3.8.0",
-    "@vue/cli-service": "^3.8.0",
-    "@vue/eslint-config-airbnb": "^4.0.0",
-    "@vue/test-utils": "1.0.0-beta.29",
+    "@quasar/app": "^2.0.0",
     "babel-eslint": "^10.0.1",
-    "chai": "^4.1.2",
-    "eslint": "^5.16.0",
-    "eslint-plugin-vue": "^5.0.0",
-    "vue-template-compiler": "^2.6.10"
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/essential",
-      "@vue/airbnb"
-    ],
-    "rules": {
-      "semi": 0,
-      "no-param-reassign": [
-        "error",
-        {
-          "props": true,
-          "ignorePropertyModificationsFor": [
-            "state"
-          ]
-        }
-      ]
-    },
-    "parserOptions": {
-      "parser": "babel-eslint"
-    }
-  },
-  "postcss": {
-    "plugins": {
-      "autoprefixer": {}
-    }
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-loader": "^3.0.3",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-vue": "^6.1.2"
   },
   "browserslist": [
-    "> 1%",
-    "last 2 versions"
-  ]
+    "last 10 Chrome versions",
+    "last 10 Firefox versions",
+    "last 4 Edge versions",
+    "last 7 Safari versions",
+    "last 8 Android versions",
+    "last 8 ChromeAndroid versions",
+    "last 8 FirefoxAndroid versions",
+    "last 10 iOS versions",
+    "last 5 Opera versions"
+  ],
+  "engines": {
+    "node": ">= 10.18.1",
+    "npm": ">= 6.13.4",
+    "yarn": ">= 1.21.1"
+  }
 }

@@ -35,9 +35,8 @@
           </div>
         </div>
       </div>
-      <!-- <h2 v-if="event.phase == 'phase1'">{{attendeesCount}} people has joined</h2><img src="@/assets/giphy.gif" v-if="loading" /> -->
-      <div class="row" v-if="!loading">
-        <div :key="player" v-for="player in event.attendees" v-if="event.phase == 'phase1'">
+      <div class="row" v-if="!loading && event.phase == 'phase1'">
+        <div :key="player" v-for="player in event.attendees">
           <img class="player" :src="player.imageURL" @click="goToPlayer(player._id)" />
           <p style="text-align: center;">{{player.name}} {{player.ratingEvaluation}}</p>
         </div>
@@ -47,7 +46,8 @@
               <h2>{{attendeesToBeSelectedCount}} people to be picked</h2>
               <div class="row">
                 <template v-for="player in event.attendeesToBeSelected">
-                  <playerEventCard :data="player" :key="player._id" @selectPlayer="handleSelection"></playerEventCard>
+                  <playerEventCard :data="player" :key="player._id" @selectPlayer="handleSelection">
+                  </playerEventCard>
                 </template>
               </div>
             </div>
@@ -58,7 +58,7 @@
             <div class="card-body">
               <h2>{{teamCount}} teams gonna play</h2>
               <div class="row">
-                <div class="col-sm-6" v-for="team in event.teams">
+                <div :key="team" class="col-sm-6" v-for="team in event.teams">
                   <team :data="team" ref="teams" @skipTheTurn="handleSkipTurn"></team>
                 </div>
               </div>
@@ -99,23 +99,21 @@
 </template>
 
 <script>
-import axios from "axios";
-import Player from "@/components/PlayerCard.vue";
-import PlayerEventCard from "@/components/PlayerEventCard.vue";
-import Team from "@/components/TeamCard.vue";
-import TeamPhase3 from "@/components/TeamCardPhase3.vue";
-import router from "@/router.js";
+import axios from 'axios';
+import PlayerEventCard from '../components/PlayerEventCard.vue';
+import Team from '../components/TeamCard.vue';
+import TeamPhase3 from '../components/TeamCardPhase3.vue';
 
 export default {
-  name: "event",
+  name: 'event',
   created() {
     this.fetchEvent(this.$route.params.id);
-    var unwatch = this.$watch("event.turn", (newVal, oldVal) => {
-      newVal = newVal % this.event.teams.length;
-      oldVal = oldVal % this.event.teams.length;
+    const unwatch = this.$watch('event.turn', (newVal, oldVal) => {
+      newVal %= this.event.teams.length;
+      oldVal %= this.event.teams.length;
       this.$refs.teams[oldVal].isActive = false;
       this.$refs.teams[newVal].isActive = true;
-      if (this.isTeamFull(newVal) && this.teamQuota != 0) this.event.turn++;
+      if (this.isTeamFull(newVal) && this.teamQuota !== 0) this.event.turn += 1;
     });
     this.unwatch = unwatch;
   },
@@ -125,84 +123,81 @@ export default {
         teams: [{ players: Array }],
         attendeesToBeSelected: [
           {
-            ratingEvaluation: Number
-          }
+            ratingEvaluation: Number,
+          },
         ],
         attendees: Array,
         turn: 0,
-        phase: String
+        phase: String,
       },
       loading: false,
-      unwatch: null
+      unwatch: null,
     };
   },
   mounted() {
-    this.$watch("event", (newVal, oldVal) => {
-      if (newVal.phase == "phase2") this.startPlayerSelection();
+    this.$watch('event', (newVal) => {
+      if (newVal.phase === 'phase2') this.startPlayerSelection();
     });
   },
   components: {
-    Player,
     Team,
     TeamPhase3,
-    PlayerEventCard
+    PlayerEventCard,
   },
   methods: {
-    fetchEvent: async function(id) {
+    async fetchEvent(id) {
       this.loading = true;
       const res = await axios.get(
-        `https://localhost:8080/api/daily-event/${id}`
+        `https://localhost:8080/api/daily-event/${id}`,
       );
       this.event = res.data;
       this.loading = false;
     },
-    fetchEventPhase2: async function(id) {
+    async fetchEventPhase2() {
       this.loading = true;
       const res = await axios.post(
-        `https://localhost:8080/api/daily-event/phase2/`,
-        { _id: this.event._id }
+        'https://localhost:8080/api/daily-event/phase2/',
+        { _id: this.event._id },
       );
       this.event = res.data;
       this.teams = res.data.teams;
       this.loading = false;
     },
-    startPlayerSelection: function() {
+    startPlayerSelection() {
       const counter = this.event.turn % this.event.teams.length;
       this.$refs.teams[counter].$data.isActive = true;
     },
-    goToPlayer: function(_id) {
-      router.push({
-        name: "player",
-        params: { id: _id }
+    goToPlayer(_id) {
+      this.$this.$router.push({
+        name: 'player',
+        params: { id: _id },
       });
     },
-    isAbleToPick: function(turn) {
-      this.event.attendeesToBeSelected.forEach(player => {
+    isAbleToPick(turn) {
+      this.event.attendeesToBeSelected.forEach((player) => {
         if (this.event.teams[turn].credits < player.ratingEvaluation) {
-          alert("There is no player that you can pick.. sorry..");
+          alert('There is no player that you can pick.. sorry..');
           return false;
-        } else return true;
+        } return true;
       });
     },
-    isTeamFull: function(turn) {
-      if (this.event.teams[turn].players.length == 3) {
-        console.log("hobaa");
+    isTeamFull(turn) {
+      if (this.event.teams[turn].players.length === 3) {
+        console.log('hobaa');
         return true;
-      } else return false;
+      } return false;
     },
-    handleSkipTurn: async function() {
-      this.event.turn++;
+    async handleSkipTurn() {
+      this.event.turn += 1;
       await axios.put(
         `https://localhost:8080/api/daily-event/${this.event._id}`,
-        this.event
+        this.event,
       );
     },
-    handleSelection: async function(id) {
+    async handleSelection(id) {
       const counter = this.event.turn % this.event.teams.length;
       const indexPlayer = this.event.attendeesToBeSelected.findIndex(
-        attendee => {
-          return attendee._id.toString() == id.toString();
-        }
+        (attendee) => attendee._id.toString() === id.toString(),
       );
       const selectedPlayer = this.event.attendeesToBeSelected[indexPlayer];
       const selectedTeam = this.event.teams[counter];
@@ -217,23 +212,23 @@ export default {
       selectedTeam.players.push(selectedPlayer);
       await axios.put(
         `https://localhost:8080/api/team/${selectedTeam._id}`,
-        selectedTeam
+        selectedTeam,
       );
-      this.teamQuota--;
-      if (this.teamQuota == 0) {
-        this.event.phase = "phase3";
+      this.teamQuota -= 1;
+      if (this.teamQuota === 0) {
+        this.event.phase = 'phase3';
         this.unwatch();
         await axios.put(
           `https://localhost:8080/api/daily-event/${this.event._id}`,
-          this.event
+          this.event,
         );
       }
-      this.event.turn++;
+      this.event.turn += 1;
       await axios.put(
         `https://localhost:8080/api/daily-event/${this.event._id}`,
-        this.event
+        this.event,
       );
-    }
+    },
     // playerValidation: function(selectedPlayer, selectedTeam, indexPlayer) {
     //   return new Promise((resolve, reject) => {
 
@@ -243,37 +238,38 @@ export default {
     //       throw new Error('Your credit is not enough')
     //     }
     //     this.event.attendeesToBeSelected.splice(indexPlayer, 1)
-    //     selectedTeam.credits = (selectedTeam.credits - selectedPlayer.ratingEvaluation).toFixed(2)
+    //     selectedTeam.credits = (
+    // selectedTeam.credits - selectedPlayer.ratingEvaluation).toFixed(2)
     //     selectedTeam.players.push(selectedPlayer)
     //     resolve(selectedTeam)
     //   })
     // }
   },
   computed: {
-    realDate: function() {
+    realDate() {
       const eventTime = new Date(this.event.date);
       return eventTime.toLocaleDateString();
     },
-    time: function() {
+    time() {
       const eventTime = new Date(this.event.date);
       return eventTime.toLocaleTimeString();
     },
-    teamCount: function() {
+    teamCount() {
       return this.event.teams.length;
     },
-    attendeesCount: function() {
+    attendeesCount() {
       return this.event.attendees.length;
     },
-    attendeesToBeSelectedCount: function() {
+    attendeesToBeSelectedCount() {
       return this.event.attendeesToBeSelected.length;
     },
-    teamQuota: function() {
+    teamQuota() {
       let totalSelectedPlayers = 0;
-      this.event.teams.forEach(team => {
+      this.event.teams.forEach((team) => {
         totalSelectedPlayers += team.players.length;
       });
       return this.event.teams.length * 3 - totalSelectedPlayers;
-    }
+    },
     // get: function () {
     //   return result
     // },
@@ -283,7 +279,7 @@ export default {
     //   this.firstName = names[0]
     //   this.lastName = names[names.length - 1]
     // }
-  }
+  },
 };
 </script>
 

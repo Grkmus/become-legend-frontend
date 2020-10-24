@@ -36,7 +36,9 @@
                 placeholder="Surname"
                 name="surname"
               />
-              <div class="invalid-feedback" v-if="errorMessage.surname">{{ errorMessage.surname }}</div>
+              <div class="invalid-feedback" v-if="errorMessage.surname">
+                {{ errorMessage.surname }}
+              </div>
             </div>
 
             <div class="form-group has-danger">
@@ -51,8 +53,9 @@
                 name="email"
                 aria-describedby="emailHelp"
               />
-              <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
-              <div class="invalid-feedback" v-if="errorMessage.email">{{ errorMessage.email }}</div>
+              <div class="invalid-feedback" v-if="errorMessage.email">
+                {{ errorMessage.email }}
+              </div>
             </div>
 
             <div class="form-group has-danger">
@@ -67,7 +70,9 @@
                 name="username"
                 aria-describedby="usernameHelp"
               />
-              <div class="invalid-feedback" v-if="errorMessage.username">{{ errorMessage.username }}</div>
+              <div class="invalid-feedback" v-if="errorMessage.username">
+                {{ errorMessage.username }}
+              </div>
             </div>
 
             <div class="form-group">
@@ -81,7 +86,9 @@
                 placeholder="Password"
                 name="password"
               />
-              <div class="invalid-feedback" v-if="errorMessage.password">{{ errorMessage.password }}</div>
+              <div class="invalid-feedback" v-if="errorMessage.password">
+                {{ errorMessage.password }}
+              </div>
             </div>
 
             <div class="form-group">
@@ -106,9 +113,8 @@
 </template>
 
 <script>
-import router from "../router.js";
-import axios from "axios";
-import Joi from "@hapi/joi";
+import axios from 'axios';
+import Joi from '@hapi/joi';
 
 const schema = Joi.object().keys({
   name: Joi.string()
@@ -128,96 +134,92 @@ const schema = Joi.object().keys({
     .required(),
   email: Joi.string().email({ minDomainSegments: 2 }),
   password: Joi.string().regex(/^[a-zA-Z0-9]{6,30}$/),
-  confirmPassword: Joi.string().regex(/^[a-zA-Z0-9]{6,30}$/)
+  confirmPassword: Joi.string().regex(/^[a-zA-Z0-9]{6,30}$/),
 });
 
 export default {
-  name: "register",
+  name: 'register',
   data: () => ({
     errorMessage: {
-      name: "",
-      surname: "",
-      username: "",
-      email: "",
-      password: "",
-      general: ""
+      name: '',
+      surname: '',
+      username: '',
+      email: '',
+      password: '',
+      general: '',
     },
     player: {
-      name: "",
-      surname: "",
-      username: "",
-      email: "",
-      password: "",
-      confirmPassword: ""
-    }
+      name: '',
+      surname: '',
+      username: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
   }),
   methods: {
-    signup: async function() {
+    async signup() {
       if (this.validPlayer()) {
         await axios
-          .post("http://localhost:8080/api/register", this.player)
-          .then(async res => {
+          .post('http://localhost:8080/api/register', this.player)
+          .then(async (res) => {
             console.log(res);
             localStorage.token = res.data.token;
-            router.push("home");
+            this.$router.push('home');
           })
-          .catch(err => {
-            if (err.response.status == 406)
-              this.errorMessage.username =
-                "Sorry, this username's already taken.";
+          .catch((err) => {
+            if (err.response.status === 406) this.errorMessage.username = "Sorry, this username's already taken.";
             else this.errorMessage.general = err.message;
           });
       }
-      console.log("user is not valid");
+      console.log('user is not valid');
     },
-    validPlayer: function() {
+    validPlayer() {
       this.errorMessage = {
-        //reset the errorMessage object
-        name: "",
-        surname: "",
-        username: "",
-        email: "",
-        password: "",
-        general: ""
+        // reset the errorMessage object
+        name: '',
+        surname: '',
+        username: '',
+        email: '',
+        password: '',
+        general: '',
       };
 
       if (this.player.password !== this.player.confirmPassword) {
-        this.errorMessage.password = "Passwords are not matching.";
-        return false;
-      } else {
-        const result = Joi.validate(this.player, schema, { abortEarly: false });
-        if (result.error === null) {
-          return true;
-        }
-        result.error.details.forEach(error => {
-          if (error.path[0] === "name" && this.errorMessage.name === "") {
-            this.errorMessage.name = error.message;
-          } else if (
-            error.path[0] === "surname" &&
-            this.errorMessage.surname === ""
-          ) {
-            this.errorMessage.surname = error.message;
-          } else if (
-            error.path[0] === "username" &&
-            this.errorMessage.username === ""
-          ) {
-            this.errorMessage.username = error.message;
-          } else if (
-            error.path[0] === "email" &&
-            this.errorMessage.email === ""
-          ) {
-            this.errorMessage.email = error.message;
-          } else if (
-            error.path[0] === "password" &&
-            this.errorMessage.password === ""
-          ) {
-            this.errorMessage.password = error.message;
-          }
-        });
+        this.errorMessage.password = 'Passwords are not matching.';
         return false;
       }
-      return true;
-    }
-  }
+      const result = Joi.validate(this.player, schema, { abortEarly: false });
+      if (result.error === null) {
+        return true;
+      }
+      result.error.details.forEach((error) => {
+        if (error.path[0] === 'name' && this.errorMessage.name === '') {
+          this.errorMessage.name = error.message;
+        } else if (
+          error.path[0] === 'surname'
+            && this.errorMessage.surname === ''
+        ) {
+          this.errorMessage.surname = error.message;
+        } else if (
+          error.path[0] === 'username'
+            && this.errorMessage.username === ''
+        ) {
+          this.errorMessage.username = error.message;
+        } else if (
+          error.path[0] === 'email'
+            && this.errorMessage.email === ''
+        ) {
+          this.errorMessage.email = error.message;
+        } else if (
+          error.path[0] === 'password'
+            && this.errorMessage.password === ''
+        ) {
+          this.errorMessage.password = error.message;
+        }
+      });
+      return false;
+    },
+  },
 };
 </script>
